@@ -61,7 +61,11 @@ class PublicV4 extends \SoapClient
    */
   public function ListHcpApprox4(ListHcpApproxRequest $listHcpApproxRequest)
   {
-    return $this->__soapCall('ListHcpApprox4', array($listHcpApproxRequest));
+    try {
+      return $this->__soapCall('ListHcpApprox4', array($listHcpApproxRequest));
+    } catch (\SoapFault $e) {
+      ray('SOAP Fault: (faultcode: ' . $e->faultcode . ', faultstring: ' . $e->getMessage() . ')');
+    }
   }
 
   /**
