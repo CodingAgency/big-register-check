@@ -10,15 +10,13 @@ use JustDevs\BIGRegister\Client\SourceWebSite;
 class BigSearch
 {
     protected string $registrationNumber;
-
     protected PublicV4 $client;
-
 
     /**
      * BigSearch constructor.
-     * @param String $registrationNumber
+     * @param string $registrationNumber
      */
-    public function __construct($registrationNumber)
+    public function __construct(string $registrationNumber)
     {
         $this->registrationNumber = $registrationNumber;
         $this->client = new PublicV4();
@@ -36,18 +34,18 @@ class BigSearch
         $request = new ListHcpApproxRequest(SourceWebSite::Ribiz);
         $request->setRegistrationNumber($this->registrationNumber);
 
-        $response = $this->client->ListHcpApprox4($request)->getListHcpApprox();
+        $response = $this->client->ListHcpApprox4($request)?->getListHcpApprox();
         if ($response && $response->getListHcpApprox4()) {
-            $first = $response[0];
+            $first = $response->getListHcpApprox4()[0];
             $registrations = $first->getArticleRegistration();
             if ($registrations && $registrations->getArticleRegistrationExtApp()) {
                 // Filter out registrations with invalid endDates
-                $filteredRegistrations = array_filter($registrations->getArticleRegistrationExtApp(), static function ($registration) use ($dateTime) {
-                    $endDate = $registration->getArticleRegistrationEndDate();
-                    return $endDate == $dateTime;
-                });
+                $filteredRegistrations = array_filter(
+                    $registrations->getArticleRegistrationExtApp(),
+                    static fn($registration) => $registration->getArticleRegistrationEndDate() == $dateTime
+                );
                 // All registrations are still there after filtering?
-                return count($filteredRegistrations) === count($registrations);
+                return count($filteredRegistrations) === count($registrations->getArticleRegistrationExtApp());
             }
         }
         return false;

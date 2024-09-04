@@ -2,54 +2,52 @@
 
 namespace JustDevs\BIGRegister\Client;
 
-class PublicV4 extends \SoapClient
-{
+use SoapClient;
+use SoapFault;
 
+class PublicV4 extends SoapClient
+{
   /**
    * @var array $classmap The defined classes
    */
-  private static $classmap = array(
-    'ListHcpApproxRequest' => 'JustDevs\\BIGRegister\\Client\\ListHcpApproxRequest',
-    'ListHcpApproxResponse4' => 'JustDevs\\BIGRegister\\Client\\ListHcpApproxResponse4',
-    'ArrayOfListHcpApprox4' => 'JustDevs\\BIGRegister\\Client\\ArrayOfListHcpApprox4',
-    'ListHcpApprox4' => 'JustDevs\\BIGRegister\\Client\\ListHcpApprox4',
-    'Address' => 'JustDevs\\BIGRegister\\Client\\Address',
-    'ArrayOfArticleRegistrationExtApp' => 'JustDevs\\BIGRegister\\Client\\ArrayOfArticleRegistrationExtApp',
-    'ArticleRegistrationExtApp' => 'JustDevs\\BIGRegister\\Client\\ArticleRegistrationExtApp',
-    'ArrayOfSpecialismExtApp1' => 'JustDevs\\BIGRegister\\Client\\ArrayOfSpecialismExtApp1',
-    'SpecialismExtApp1' => 'JustDevs\\BIGRegister\\Client\\SpecialismExtApp1',
-    'ArrayOfMentionExtApp' => 'JustDevs\\BIGRegister\\Client\\ArrayOfMentionExtApp',
-    'MentionExtApp' => 'JustDevs\\BIGRegister\\Client\\MentionExtApp',
-    'ArrayOfJudgmentProvisionExtApp' => 'JustDevs\\BIGRegister\\Client\\ArrayOfJudgmentProvisionExtApp',
-    'JudgmentProvisionExtApp' => 'JustDevs\\BIGRegister\\Client\\JudgmentProvisionExtApp',
-    'ArrayOfLimitationExtApp' => 'JustDevs\\BIGRegister\\Client\\ArrayOfLimitationExtApp',
-    'LimitationExtApp' => 'JustDevs\\BIGRegister\\Client\\LimitationExtApp',
-    'GetRibizReferenceData' => 'JustDevs\\BIGRegister\\Client\\GetRibizReferenceData',
-    'GetRibizReferenceDataRequest' => 'JustDevs\\BIGRegister\\Client\\GetRibizReferenceDataRequest',
-    'GetRibizReferenceDataResponse' => 'JustDevs\\BIGRegister\\Client\\GetRibizReferenceDataResponse',
-    'ArrayOfProfessionalGroup' => 'JustDevs\\BIGRegister\\Client\\ArrayOfProfessionalGroup',
-    'ProfessionalGroup' => 'JustDevs\\BIGRegister\\Client\\ProfessionalGroup',
-    'ArrayOfTypeOfSpecialism' => 'JustDevs\\BIGRegister\\Client\\ArrayOfTypeOfSpecialism',
-    'TypeOfSpecialism' => 'JustDevs\\BIGRegister\\Client\\TypeOfSpecialism',
-  );
+  private static array $classmap = [
+    'ListHcpApproxRequest' => ListHcpApproxRequest::class,
+    'ListHcpApproxResponse4' => ListHcpApproxResponse4::class,
+    'ArrayOfListHcpApprox4' => ArrayOfListHcpApprox4::class,
+    'ListHcpApprox4' => ListHcpApprox4::class,
+    'Address' => Address::class,
+    'ArrayOfArticleRegistrationExtApp' => ArrayOfArticleRegistrationExtApp::class,
+    'ArticleRegistrationExtApp' => ArticleRegistrationExtApp::class,
+    'ArrayOfSpecialismExtApp1' => ArrayOfSpecialismExtApp1::class,
+    'SpecialismExtApp1' => SpecialismExtApp1::class,
+    'ArrayOfMentionExtApp' => ArrayOfMentionExtApp::class,
+    'MentionExtApp' => MentionExtApp::class,
+    'ArrayOfJudgmentProvisionExtApp' => ArrayOfJudgmentProvisionExtApp::class,
+    'JudgmentProvisionExtApp' => JudgmentProvisionExtApp::class,
+    'ArrayOfLimitationExtApp' => ArrayOfLimitationExtApp::class,
+    'LimitationExtApp' => LimitationExtApp::class,
+    'GetRibizReferenceData' => GetRibizReferenceData::class,
+    'GetRibizReferenceDataRequest' => GetRibizReferenceDataRequest::class,
+    'GetRibizReferenceDataResponse' => GetRibizReferenceDataResponse::class,
+    'ArrayOfProfessionalGroup' => ArrayOfProfessionalGroup::class,
+    'ProfessionalGroup' => ProfessionalGroup::class,
+    'ArrayOfTypeOfSpecialism' => ArrayOfTypeOfSpecialism::class,
+    'TypeOfSpecialism' => TypeOfSpecialism::class,
+  ];
 
   /**
-   * @param array $options A array of config values
-   * @param string $wsdl The wsdl file to use
+   * @param array $options An array of config values
+   * @param string|null $wsdl The WSDL file to use
    */
-  public function __construct(array $options = array(), $wsdl = null)
+  public function __construct(array $options = [], string $wsdl = null)
   {
     foreach (self::$classmap as $key => $value) {
       if (!isset($options['classmap'][$key])) {
         $options['classmap'][$key] = $value;
       }
     }
-    $options = array_merge(array(
-      'features' => 1,
-    ), $options);
-    if (!$wsdl) {
-      $wsdl = 'https://api.bigregister.nl/zksrv/soap/4?wsdl';
-    }
+    $options = array_merge(['features' => SOAP_SINGLE_ELEMENT_ARRAYS], $options);
+    $wsdl = $wsdl ?? 'https://api.bigregister.nl/zksrv/soap/4?wsdl';
     parent::__construct($wsdl, $options);
   }
 
@@ -57,14 +55,15 @@ class PublicV4 extends \SoapClient
    * Search for health care professionals based on approx match
    *
    * @param ListHcpApproxRequest $listHcpApproxRequest
-   * @return ListHcpApproxResponse4
+   * @return ListHcpApproxResponse4|null
    */
-  public function ListHcpApprox4(ListHcpApproxRequest $listHcpApproxRequest)
+  public function ListHcpApprox4(ListHcpApproxRequest $listHcpApproxRequest): ?ListHcpApproxResponse4
   {
     try {
-      return $this->__soapCall('ListHcpApprox4', array($listHcpApproxRequest));
-    } catch (\SoapFault $e) {
-      ray('SOAP Fault: (faultcode: ' . $e->faultcode . ', faultstring: ' . $e->getMessage() . ')');
+      return $this->__soapCall('ListHcpApprox4', [$listHcpApproxRequest]);
+    } catch (SoapFault $e) {
+      error_log('SOAP Fault: (faultcode: ' . $e->faultcode . ', faultstring: ' . $e->getMessage() . ')');
+      return null;
     }
   }
 
@@ -72,11 +71,15 @@ class PublicV4 extends \SoapClient
    * Returns the RIBIZ reference data
    *
    * @param GetRibizReferenceData $parameters
-   * @return GetRibizReferenceDataResponse
+   * @return GetRibizReferenceDataResponse|null
    */
-  public function GetRibizReferenceData(GetRibizReferenceData $parameters)
+  public function GetRibizReferenceData(GetRibizReferenceData $parameters): ?GetRibizReferenceDataResponse
   {
-    return $this->__soapCall('GetRibizReferenceData', array($parameters));
+    try {
+      return $this->__soapCall('GetRibizReferenceData', [$parameters]);
+    } catch (SoapFault $e) {
+      error_log('SOAP Fault: (faultcode: ' . $e->faultcode . ', faultstring: ' . $e->getMessage() . ')');
+      return null;
+    }
   }
-
 }
